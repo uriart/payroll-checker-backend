@@ -10,7 +10,6 @@ import (
 
 // UploadPayroll maneja la solicitud para subir un archivo PDF
 func UploadPayroll(c *gin.Context) {
-	// Obtener el archivo desde el formulario
 	file, header, err := c.Request.FormFile("file")
 	if err != nil {
 		log.Printf("Error al obtener el archivo: %v", err)
@@ -19,7 +18,6 @@ func UploadPayroll(c *gin.Context) {
 	}
 	defer file.Close()
 
-	// Validar el tipo MIME del archivo
 	if header.Header.Get("Content-Type") != "application/pdf" {
 		log.Printf("Archivo con MIME type inválido: %s", header.Header.Get("Content-Type"))
 		c.JSON(http.StatusBadRequest, gin.H{"error": "El archivo debe ser un PDF"})

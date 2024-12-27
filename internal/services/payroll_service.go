@@ -26,7 +26,6 @@ func init() {
 }
 
 func StructurePayrollData(file multipart.File) (*models.Payroll, error) {
-
 	options := genai.UploadFileOptions{
 		DisplayName: "payroll.pdf",
 		MIMEType:    "application/pdf",
@@ -43,5 +42,4 @@ func StructurePayrollData(file multipart.File) (*models.Payroll, error) {
 	}
 
 	return models.NewPayroll(resp), nil
-
 }
