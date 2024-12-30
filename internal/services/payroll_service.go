@@ -25,10 +25,10 @@ func init() {
 	}
 }
 
-func StructurePayrollData(file multipart.File) (*models.Payroll, error) {
+func StructurePayrollData(file multipart.File, header *multipart.FileHeader) (*models.Payroll, error) {
 	options := genai.UploadFileOptions{
-		DisplayName: "payroll.pdf",
-		MIMEType:    "application/pdf",
+		DisplayName: header.Filename,
+		MIMEType:    header.Header.Get("Content-Type"),
 	}
 	fileData, err := client.UploadFile(ctx, "", file, &options)
 	if err != nil {

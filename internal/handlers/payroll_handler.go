@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// UploadPayroll maneja la solicitud para subir un archivo PDF
+// UploadPayroll maneja la solicitud para subir un archivo PDF o imagen
 func UploadPayroll(c *gin.Context) {
 	file, header, err := c.Request.FormFile("file")
 	if err != nil {
@@ -18,13 +18,13 @@ func UploadPayroll(c *gin.Context) {
 	}
 	defer file.Close()
 
-	if header.Header.Get("Content-Type") != "application/pdf" {
+	if header.Header.Get("Content-Type") != "application/pdf" && header.Header.Get("Content-Type") != "image/jpeg" {
 		log.Printf("Archivo con MIME type inválido: %s", header.Header.Get("Content-Type"))
-		c.JSON(http.StatusBadRequest, gin.H{"error": "El archivo debe ser un PDF"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "El archivo debe ser un PDF o una imagen jpeg"})
 		return
 	}
 
-	payroll, err := services.StructurePayrollData(file)
+	payroll, err := services.StructurePayrollData(file, header)
 	if err != nil {
 		log.Printf("Error al estructurar los datos de la nómina: %v", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Revisa los datos de la nómina"})
@@ -34,4 +34,8 @@ func UploadPayroll(c *gin.Context) {
 	// Responder con éxito
 	log.Printf("Archivo %s procesado correctamente", header.Filename)
 	c.JSON(http.StatusOK, payroll)
+}
+
+func HealthCheck(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{"status": "OK"})
 }
