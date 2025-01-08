@@ -30,7 +30,9 @@ func SetupRouter() *gin.Engine {
 	defaultGroup := router.Group("/payroll")
 	{
 		defaultGroup.Use(middleware.EnsureValidToken()) // Grupo protegido con JWT
-		defaultGroup.POST("/upload", handlers.UploadPayroll)
+		defaultGroup.POST("/struct", handlers.StructurePayroll)
+		defaultGroup.POST("/create", handlers.CreatePayroll)
+		defaultGroup.GET("/all", handlers.GetUserPayrolls)
 	}
 
 	return router

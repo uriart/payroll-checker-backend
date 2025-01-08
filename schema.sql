@@ -1,0 +1,26 @@
+CREATE TABLE Nomina (
+    id SERIAL PRIMARY KEY,
+    empleado_id VARCHAR(255) NOT NULL,
+    puesto_trabajo VARCHAR(255) NOT NULL,
+    grupo_profesional VARCHAR(255) NOT NULL,
+    empresa_nombre VARCHAR(255) NOT NULL,
+    periodo_mes CHAR(7) NOT NULL, -- Formato: YYYY-MM
+    periodo_dias_trabajados INT NOT NULL,
+    salario_base DECIMAL(10, 2) NOT NULL,
+    complementos DECIMAL(10, 2) NOT NULL,
+    horas_extras DECIMAL(10, 2) NOT NULL,
+    dietas DECIMAL(10, 2) NOT NULL,
+    pagas_extraordinarias DECIMAL(10, 2) NOT NULL,
+    total_devengado DECIMAL(10, 2) NOT NULL,
+    contingencias_comunes DECIMAL(10, 2) NOT NULL,
+    formacion_profesional DECIMAL(10, 2) NOT NULL,
+    desempleo DECIMAL(10, 2) NOT NULL,
+    horas_extras_seguridad_social DECIMAL(10, 2) NOT NULL,
+    irpf DECIMAL(10, 2) NOT NULL,
+    otros_descuentos DECIMAL(10, 2) NOT NULL,
+    total_deducido DECIMAL(10, 2) NOT NULL,
+    base_irpf DECIMAL(10, 2) NOT NULL,
+    base_contingencias_comunes DECIMAL(10, 2) NOT NULL,
+    base_contingencias_profesionales DECIMAL(10, 2) NOT NULL,
+    liquido_percibido DECIMAL(10, 2) NOT NULL
+);

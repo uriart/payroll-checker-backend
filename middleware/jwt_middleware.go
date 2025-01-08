@@ -58,13 +58,17 @@ func EnsureValidToken() gin.HandlerFunc {
 		}
 
 		token := strings.TrimPrefix(authHeader, "Bearer ")
-		_, err := jwtValidator.ValidateToken(c.Request.Context(), token)
+		claims, err := jwtValidator.ValidateToken(c.Request.Context(), token)
 		if err != nil {
 			log.Printf("JWT validation error: %v", err)
 			c.JSON(http.StatusUnauthorized, gin.H{"message": "Invalid or expired token"})
 			c.Abort()
 			return
 		}
+
+		// Recuperamos el id del usuario que hace la petición
+		customClaims, _ := claims.(*validator.ValidatedClaims)
+		c.Set("userID", customClaims.RegisteredClaims.Subject)
 
 		// Si el token es válido, continúa con el siguiente handler
 		c.Next()

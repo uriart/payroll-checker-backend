@@ -3,9 +3,12 @@ package main
 import (
 	"log"
 	"payroll-checker-backend/api"
+	"payroll-checker-backend/internal/repository"
 )
 
 func main() {
+
+	repository.ConnectDatabase()
 
 	router := api.SetupRouter()
 

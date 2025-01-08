@@ -3,13 +3,14 @@ package handlers
 import (
 	"log"
 	"net/http"
+	"payroll-checker-backend/internal/models"
 	"payroll-checker-backend/internal/services"
 
 	"github.com/gin-gonic/gin"
 )
 
 // UploadPayroll maneja la solicitud para subir un archivo PDF o imagen
-func UploadPayroll(c *gin.Context) {
+func StructurePayroll(c *gin.Context) {
 	file, header, err := c.Request.FormFile("file")
 	if err != nil {
 		log.Printf("Error al obtener el archivo: %v", err)
@@ -38,4 +39,36 @@ func UploadPayroll(c *gin.Context) {
 
 func HealthCheck(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": "OK"})
+}
+
+func CreatePayroll(c *gin.Context) {
+	var payload models.Nomina
+
+	// Parseamos el JSON recibido
+	if err := c.ShouldBindJSON(&payload); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	payload.EmpleadoID = c.GetString("userID")
+
+	err := services.CreatePayroll(payload)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Nomina created successfully"})
+}
+
+func GetUserPayrolls(c *gin.Context) {
+	userId := c.GetString("userID")
+
+	nominas, err := services.GetPayrollsByUser(userId)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+
+	c.JSON(http.StatusOK, nominas)
 }

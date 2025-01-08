@@ -8,6 +8,7 @@ import (
 	"os"
 	"payroll-checker-backend/internal/models"
 	"payroll-checker-backend/internal/prompts"
+	"payroll-checker-backend/internal/repository"
 
 	"github.com/google/generative-ai-go/genai"
 	"google.golang.org/api/option"
@@ -25,7 +26,7 @@ func init() {
 	}
 }
 
-func StructurePayrollData(file multipart.File, header *multipart.FileHeader) (*models.Payroll, error) {
+func StructurePayrollData(file multipart.File, header *multipart.FileHeader) (*models.Nomina, error) {
 	options := genai.UploadFileOptions{
 		DisplayName: header.Filename,
 		MIMEType:    header.Header.Get("Content-Type"),
@@ -42,4 +43,26 @@ func StructurePayrollData(file multipart.File, header *multipart.FileHeader) (*m
 	}
 
 	return models.NewPayroll(resp), nil
+}
+
+func CreatePayroll(payload models.Nomina) error {
+	db := repository.DB
+
+	if err := db.Create(&payload).Error; err != nil {
+		return fmt.Errorf("falied to create NominaCompleta")
+	}
+
+	return nil
+}
+
+func GetPayrollsByUser(userId string) ([]models.Nomina, error) {
+	var nominas []models.Nomina
+	db := repository.DB
+
+	result := db.Where("empleado_id = ?", userId).Find(&nominas)
+	if result.Error != nil {
+		return nil, fmt.Errorf("error getting payrolls: %v", result.Error)
+	}
+
+	return nominas, nil
 }
